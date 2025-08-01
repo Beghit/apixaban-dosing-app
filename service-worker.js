@@ -1,9 +1,9 @@
 const CACHE_NAME = 'zapixan-dosing-cache-v1';
 const urlsToCache = [
-  '/zapixan.html',
-  '/styles.css',
-  '/isio.png',           // Only this one logo file
-  '/manifest.json'       // Don't forget the manifest
+  './',
+  './index.html',
+  './isio.png',
+  './manifest.json'
 ];
 
 self.addEventListener('install', event => {
