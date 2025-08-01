@@ -1,0 +1,17 @@
+{
+  "name": "Zapixan Dosing Guide",
+  "short_name": "Zapixan Dose",
+  "description": "Apixaban dosing calculator for healthcare professionals",
+  "start_url": "/zapixan.html",
+  "display": "standalone",
+  "background_color": "#0f172a",
+  "theme_color": "#c00000",
+  "icons": [
+    {
+      "src": "isio.png",
+      "sizes": "192x192 512x512",  // Both sizes in one entry
+      "type": "image/png",
+      "purpose": "any maskable"    // Single icon serves both purposes
+    }
+  ]
+}
