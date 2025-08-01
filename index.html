@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Zapixan Dosing Guide</title>
+    <link rel="manifest" href="manifest.json">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -615,6 +616,40 @@
             font-size: 14px;
         }
 
+        /* Install Button Styles */
+        #install-container {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            display: none;
+            z-index: 1000;
+        }
+        
+        #install-button {
+            padding: 12px 20px;
+            background: #c00000;
+            color: white;
+            border: none;
+            border-radius: 30px;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s ease;
+        }
+        
+        #install-button:hover {
+            background: #e53e3e;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(192, 0, 0, 0.4);
+        }
+        
+        #install-button:active {
+            transform: translateY(0);
+        }
+
         @media (max-width: 600px) {
             .form-grid {
                 grid-template-columns: 1fr;
@@ -635,6 +670,14 @@
             .checkbox-group {
                 flex-direction: column;
                 gap: 0.5rem;
+            }
+            #install-container {
+                bottom: 10px;
+                right: 10px;
+            }
+            #install-button {
+                padding: 10px 16px;
+                font-size: 14px;
             }
         }
     </style>
@@ -883,6 +926,18 @@
             <p data-lang-key="footer_disclaimer_1">This tool is for informational purposes only and is not a substitute for professional medical advice, diagnosis, or treatment. All clinical decisions must be made by a qualified healthcare provider.</p>
             <p class="copyright">Dr El Hajjaj Belghait © 2025</p>
         </footer>
+    </div>
+
+    <!-- Install Button Container -->
+    <div id="install-container">
+        <button id="install-button">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                <polyline points="7 10 12 15 17 10"></polyline>
+                <line x1="12" y1="15" x2="12" y2="3"></line>
+            </svg>
+            Install App
+        </button>
     </div>
 
     <script>
@@ -1329,102 +1384,64 @@
                 }
             }, 300); // Short delay to show loading indicator
         }
-<!-- Install Button Container -->
-<div id="install-container" style="position: fixed; bottom: 20px; right: 20px; display: none; z-index: 1000;">
-  <button id="install-button" style="
-    padding: 12px 20px;
-    background: #c00000;
-    color: white;
-    border: none;
-    border-radius: 30px;
-    cursor: pointer;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.3);
-    font-weight: 600;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-  ">
-    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-      <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
-      <polyline points="7 10 12 15 17 10"></polyline>
-      <line x1="12" y1="15" x2="12" y2="3"></line>
-    </svg>
-    Install App
-  </button>
-</div>
 
-<script>
-// Robust install handler with debug logging
-window.addEventListener('beforeinstallprompt', (e) => {
-  e.preventDefault();
-  console.log('Before install prompt triggered');
-  
-  // Store event for later use
-  window.deferredPrompt = e;
-  
-  // Show install button
-  const installContainer = document.getElementById('install-container');
-  if (installContainer) {
-    installContainer.style.display = 'block';
-    
-    // Add click handler
-    const installButton = document.getElementById('install-button');
-    if (installButton) {
-      installButton.onclick = async () => {
-        if (!window.deferredPrompt) return;
-        window.deferredPrompt.prompt();
-        const { outcome } = await window.deferredPrompt.userChoice;
-        console.log('User response to install prompt:', outcome);
-        installContainer.style.display = 'none';
-        window.deferredPrompt = null;
-      };
-    }
-  }
-});
+        // ===== PWA INSTALLATION HANDLER =====
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            console.log('Before install prompt triggered');
+            
+            // Store event for later use
+            window.deferredPrompt = e;
+            
+            // Show install button
+            const installContainer = document.getElementById('install-container');
+            if (installContainer) {
+                installContainer.style.display = 'block';
+                
+                // Add click handler
+                const installButton = document.getElementById('install-button');
+                if (installButton) {
+                    installButton.onclick = async () => {
+                        if (!window.deferredPrompt) return;
+                        window.deferredPrompt.prompt();
+                        const { outcome } = await window.deferredPrompt.userChoice;
+                        console.log('User response to install prompt:', outcome);
+                        installContainer.style.display = 'none';
+                        window.deferredPrompt = null;
+                    };
+                }
+            }
+        });
 
-// Hide install button after successful installation
-window.addEventListener('appinstalled', () => {
-  console.log('PWA was installed');
-  const installContainer = document.getElementById('install-container');
-  if (installContainer) installContainer.style.display = 'none';
-});
+        // Hide install button after successful installation
+        window.addEventListener('appinstalled', () => {
+            console.log('PWA was installed');
+            const installContainer = document.getElementById('install-container');
+            if (installContainer) installContainer.style.display = 'none';
+        });
 
-// Log installability status
-window.addEventListener('load', () => {
-  if ('getInstalledRelatedApps' in navigator) {
-    navigator.getInstalledRelatedApps().then(apps => {
-      console.log('Installed related apps:', apps);
-      console.log('Installable status:', apps.length === 0);
-    });
-  }
-});
-</script>
-
-<!-- Service Worker Registration -->
-<script>
-if ('serviceWorker' in navigator) {
-  window.addEventListener('load', () => {
-    navigator.serviceWorker.register('service-worker.js', { scope: './' })
-      .then(registration => {
-        console.log('Service Worker registered with scope:', registration.scope);
-        
-        // Force service worker update on page load
-        registration.update();
-        
-        // Check for controller
-        if (navigator.serviceWorker.controller) {
-          console.log('Service Worker is controlling the page');
-        } else {
-          console.log('Service Worker not controlling the page');
+        // ===== SERVICE WORKER REGISTRATION =====
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('service-worker.js', { scope: './' })
+                    .then(registration => {
+                        console.log('Service Worker registered with scope:', registration.scope);
+                        
+                        // Force service worker update on page load
+                        registration.update();
+                        
+                        // Check for controller
+                        if (navigator.serviceWorker.controller) {
+                            console.log('Service Worker is controlling the page');
+                        } else {
+                            console.log('Service Worker not controlling the page');
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Service Worker registration failed:', error);
+                    });
+            });
         }
-      })
-      .catch(error => {
-        console.error('Service Worker registration failed:', error);
-      });
-  });
-}
-</script>
-
-
+    </script>
 </body>
 </html>
