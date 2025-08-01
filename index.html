@@ -1391,5 +1391,35 @@ window.addEventListener('appinstalled', () => {
   document.getElementById('install-container').style.display = 'none';
 });
 </script>
+    <!-- Install Button -->
+<div id="install-container" style="position: fixed; bottom: 20px; right: 20px; display: none; z-index: 1000;">
+  <button id="install-button" style="padding: 12px 20px; background: #c00000; color: white; border: none; border-radius: 30px; cursor: pointer; box-shadow: 0 4px 12px rgba(0,0,0,0.3); font-weight: 600;">
+    Install App
+  </button>
+</div>
+
+<script>
+let deferredPrompt;
+
+window.addEventListener('beforeinstallprompt', (e) => {
+  e.preventDefault();
+  deferredPrompt = e;
+  document.getElementById('install-container').style.display = 'block';
+});
+
+document.getElementById('install-button').addEventListener('click', async () => {
+  if (!deferredPrompt) return;
+  deferredPrompt.prompt();
+  const { outcome } = await deferredPrompt.userChoice;
+  if (outcome === 'accepted') {
+    document.getElementById('install-container').style.display = 'none';
+  }
+  deferredPrompt = null;
+});
+
+window.addEventListener('appinstalled', () => {
+  document.getElementById('install-container').style.display = 'none';
+});
+</script>
 </body>
 </html>
